@@ -90,15 +90,16 @@ do
       return results
     end
 
-    for second = second, last do
+    while second <= last do
       local byte = str:byte(second)
       if byte == newline_byte then
         table.insert(result, str:sub(first, second - 1))
         first = second + 1
       end
+      second = second + 1
     end
 
-    if first ~= second then
+    if first < second then
       table.insert(result, str:sub(first, last))
     end
 
@@ -123,11 +124,12 @@ do
 
     while first <= last do
       local delim = 0
-      for first = first, last do
+      while first <= last do
         delim = argString:byte(first)
         if delim ~= space_byte then
           break
         end
+        first = first + 1
       end
 
       if first == last then
