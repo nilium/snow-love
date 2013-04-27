@@ -44,8 +44,6 @@ function love.run()
 
   while cl_shouldQuit:get() < 1 do
 
-    love.event.pump()
-
     local updateScreen = false
     local frameHertz = snow.frameHertz
     local currentTime = love.timer.getTime() - baseTime
