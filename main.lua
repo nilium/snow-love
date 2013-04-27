@@ -37,7 +37,7 @@ function love.run()
       love.event.clear()
 
       love.update(frameHertz)
-      console.updateCvars()
+
       simTime = simTime + frameHertz
     end
 
@@ -54,6 +54,7 @@ end
 
 function love.update(elapsed)
   snow:doFrame(elapsed)
+  console.updateCvars()
 end
 
 
