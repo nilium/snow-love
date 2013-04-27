@@ -5,19 +5,42 @@ require 'snow/console_ui'
 
 
 function love.load(argv)
+  local plus_byte = ("+"):byte()
+  local numArgs = #argv
+
+  for argindex = 2, numArgs do
+    local param = argv[argindex]
+    if param:byte(1) == plus_byte then
+      local name = param:sub(2)
+      argindex = argindex + 1
+      if argindex > numArgs then break end
+      console.call(true, name, argv[argindex])
+    end
+  end
+
+  local gameScriptPath = fs_game:get() .. '/game.lua'
+  if love.filesystem.isFile(gameScriptPath) then
+    console.call("load", gameScriptPath)
+  end
 end
 
 
 function love.run()
   snow:setTargetFPS(60)
 
+  if not game then game = {} end
+
   if love.load then love.load(arg) end
+
+  if not game then
+    print "Game table erased post-load, terminating"
+    return
+  end
 
   local baseTime = love.timer.getTime()
   local simTime = 0
 
-  print(snow.frameHertz)
-  print(snow.targetFPS)
+  if game.load then game.load() end
 
   while cl_shouldQuit:get() < 1 do
 
@@ -32,7 +55,9 @@ function love.run()
 
       love.event.pump()
       for event, w, x, y, z in love.event.poll() do
-        snow:dispatchEvent(event, w, x, y, z)
+        if not game.event or not game.event(event, w, x, y, z) then
+          snow:dispatchEvent(event, w, x, y, z)
+        end
       end
       love.event.clear()
 
@@ -48,6 +73,7 @@ function love.run()
 
   end
 
+  if game.quit then game.quit() end
   if love.quit then love.quit() end
 end
 
@@ -60,6 +86,7 @@ end
 
 function love.draw()
   love.graphics.clear()
+  if game and game.drawFrame then game.drawFrame() end
   snow:drawFrame()
   love.graphics.present()
 end
