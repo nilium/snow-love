@@ -46,6 +46,7 @@ function console.makeCommand(name, fn)
   console._boundCvars[name] = { kind = 'command', cmd = fn }
 end
 
+
 function console.makeCvar(name, default, flags)
   local prev = console._boundCvars[name]
   if prev then
@@ -70,6 +71,7 @@ function console.makeCvar(name, default, flags)
   return newCvar
 end
 
+
 function cvar_t:canModify() --> bool
   local flags = self.flags
   if flags.cheat then
@@ -92,9 +94,11 @@ function cvar_t:canModify() --> bool
   return true
 end
 
+
 function cvar_t:set(value) --> bool
   return self:setForced(value, true)
 end
+
 
 function cvar_t:setForced(value, force) --> bool
   value = consolify(value)
@@ -119,9 +123,11 @@ function cvar_t:setForced(value, force) --> bool
   return true
 end
 
+
 function cvar_t:get()
   return self._value
 end
+
 
 function cvar_t:update()
   if self.flags.modified and self.flags.delayed then
@@ -131,6 +137,7 @@ function cvar_t:update()
   end
   self.flags.modified = false
 end
+
 
 function cvar_t:revokeChanges()
   if self.flags.modified and self.flags.delayed then
