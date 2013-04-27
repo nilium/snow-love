@@ -16,6 +16,7 @@ local function define(T)
 end
 
 -- Console variables
+define { "fs_game", "base", readonly = true, init_only = true, delayed = false }
 define { "r_frameSleep", 0.001, delayed = false}
 define { "r_drawWalls", 1 }
 define { "r_origin", { 0, 0 }, readonly = true }
