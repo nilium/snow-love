@@ -14,6 +14,7 @@ function defaultCvarFlags()
     server = false,
     user = false,
     delayed = true,
+    events = false,
     -- internal state
     modified = false
   }
@@ -115,7 +116,11 @@ function cvar_t:setForced(value, force) --> bool
     self._cache = value
     console._needUpdates[self] = self
   else
+    local oldValue = self._value
     self._value = value
+    if self.flags.events then
+      love.event.push("cvar changed", self._value, oldValue)
+    end
   end
 
   self.flags.modified = true
@@ -132,8 +137,12 @@ end
 function cvar_t:update()
   if self.flags.modified and self.flags.delayed then
     self.flags.modified = false
+    local oldValue = self._value
     self._value = self._cache
     self._cache = nil
+    if self.flags.events then
+      love.event.push("cvar changed", self._value, oldValue)
+    end
   end
   self.flags.modified = false
 end
