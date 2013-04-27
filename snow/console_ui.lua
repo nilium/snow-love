@@ -129,6 +129,7 @@ end
 
 function conui.setFont(font)
   conui.font = font
+  conui.lineHeight = conui.font:getHeight()
 end
 
 
