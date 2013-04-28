@@ -184,13 +184,17 @@ function console.getCvar(name, defaultValue, defaultFlags)
 end
 
 
-function console.call(force, name, value, ...)
+function console.call(force, name, ...)
+  local args
   if type(force) == "string" then
-    value = name
+    args = { name, ... }
     name = force
     force = false
+  else
+    args = { ... }
   end
 
+  local value = args[1]
   local binding = console._boundCvars[name]
 
   if not binding and allowUserCVars then
@@ -210,8 +214,8 @@ function console.call(force, name, value, ...)
       print("No such cvar or command named '" .. name .. "'")
     end
   elseif binding.kind == 'command' then
-    print(name, value, ...)
-    return binding.cmd(value, ...)
+    print(name, unpack(args))
+    return binding.cmd(unpack(args))
   elseif binding.kind == 'cvar' then
     if value then
       if binding.cvar:setForced(value, force) then
